@@ -1,0 +1,16 @@
+* {
+  box-sizing: border-box;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+body {
+  margin: 0;
+}
+
+.app {
+  display: flex;
+}
+
+.left-column {
+  margin-inline: auto;
+}
