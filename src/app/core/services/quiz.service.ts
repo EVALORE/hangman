@@ -11,13 +11,13 @@ import { MAX_GUESS_ATTEMPTS } from '../../shared/constants/max-guess-attempts';
 export class QuizService {
   private httpQuizzesService = inject(HttpQuizzesService);
 
+  private quizStatus$$ = new BehaviorSubject<QuizStatus>(QuizStatus.IN_PROGRESS);
+  public quizStatus$ = this.quizStatus$$.asObservable();
+
   public incorrectGuesses = signal(0);
   public question = signal('');
   public hiddenAnswer = signal('');
   private answer = '';
-
-  private quizStatus$$ = new BehaviorSubject<QuizStatus>(QuizStatus.IN_PROGRESS);
-  public quizStatus$ = this.quizStatus$$.asObservable();
 
   public getQuiz(): void {
     this.httpQuizzesService.getRandomQuiz().subscribe((quiz) => {
@@ -48,13 +48,16 @@ export class QuizService {
     }
   }
 
+  private isKeyPressedAndNotInAnswer = (key: Key): boolean =>
+    key.isDisabled && !this.answer.toLowerCase().includes(key.value);
+
   private updateIncorrectGuessCount(keys: Key[]): void {
     const incorrectGuesses = keys.filter(this.isKeyPressedAndNotInAnswer).length;
     this.incorrectGuesses.set(incorrectGuesses);
   }
 
-  private isKeyPressedAndNotInAnswer = (key: Key): boolean =>
-    key.isDisabled && !this.answer.toLowerCase().includes(key.value);
+  private isKeyPressedAndMatchesLetter = (key: Key, letter: string): boolean =>
+    key.value === letter.toLowerCase() && key.isDisabled;
 
   private updateHiddenAnswer(keys: Key[]): void {
     const revealedLetters = Array.from(this.answer, (letter) => {
@@ -63,7 +66,4 @@ export class QuizService {
     });
     this.hiddenAnswer.set(revealedLetters.join(''));
   }
-
-  private isKeyPressedAndMatchesLetter = (key: Key, letter: string): boolean =>
-    key.value === letter.toLowerCase() && key.isDisabled;
 }

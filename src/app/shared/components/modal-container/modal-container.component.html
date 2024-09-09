@@ -1,0 +1,9 @@
+@let items = content | async;
+
+@if (items?.length) {
+  <div class="wrapper">
+    @for (item of items; track $index) {
+      <ng-template [ngTemplateOutlet]="item.content" [ngTemplateOutletContext]="item.context" />
+    }
+  </div>
+}

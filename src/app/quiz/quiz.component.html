@@ -6,12 +6,20 @@
 
 <div class="counter">{{ incorrectGuesses() }}</div>
 
-<app-modal (buttonEmitter)="newQuiz()"
-           [show]="isWin()"
-           [title]="'Congratulations!'" />
+<ng-template #win>
+  <app-modal>
+    <h2>Congratulations!</h2>
+    <div>The answer was: {{ answer() }}</div>
+    <button (click)="startNewQuiz()">New Game!</button>
+  </app-modal>
+</ng-template>
 
-<app-modal (buttonEmitter)="newQuiz()"
-           [show]="isLose()"
-           [title]="'You Lose!'" />
+<ng-template #lose>
+  <app-modal>
+    <h2>You Lose!</h2>
+    <div>The answer was: {{ answer() }}</div>
+    <button (click)="startNewQuiz()">New Game!</button>
+  </app-modal>
+</ng-template>
 
 <app-keyboard (keyEmitter)="pressKey($event)" [allowEmitting]="isInProgress()" />
